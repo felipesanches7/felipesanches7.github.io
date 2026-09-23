@@ -137,26 +137,23 @@ fbq('track','PageView');
   </div>
 </section>
 
-<!-- ============ O QUE VOCÊ VAI RECEBER ============ -->
-<section class="alt">
-  <div class="wrap">
-    <h2 class="center">O que você vai receber no seu diagnóstico</h2>
-    <div class="grid">
-      <div class="card"><span class="num">1</span><h3>Grau de desequilíbrio</h3><p>Uma pontuação de 0 a 100 baseada nos seus 3 pilares — sono, alimentação e movimento — para você parar de adivinhar.</p></div>
-      <div class="card"><span class="num">2</span><h3>Impacto na sua vida</h3><p>Quanto isso já está custando — em energia, humor, autoestima e saúde — medido nas suas próprias respostas.</p></div>
-      <div class="card"><span class="num">3</span><h3>O sintoma-chave do seu caso</h3><p>Identificamos qual desequilíbrio (insulina, cortisol, estrogênio) está mais provavelmente travando o seu metabolismo.</p></div>
-      <div class="card"><span class="num">4</span><h3>Plano de ação recomendado</h3><p>Do guia "Emagrecer de Verdade" ao acompanhamento médico: o próximo passo certo para o seu momento — e nada mais que isso.</p></div>
-    </div>
-    <div class="center" style="margin-top:28px"><button class="btn" onclick="startQuiz()">FAZER O DIAGNÓSTICO AGORA</button></div>
-  </div>
-</section>
-
 <!-- ============ QUIZ ============ -->
 <div class="quiz-zone" id="quiz-zone">
   <div class="wrap">
     <div class="quiz-box" id="quiz-box">
       <div class="progress"><div class="bar" id="bar"></div></div>
       <div id="quiz-content"></div>
+    </div>
+
+    <!-- O QUE VOCÊ VAI RECEBER (aparece abaixo das perguntas) -->
+    <div id="receber-bloco" style="display:none">
+      <h2 class="center" style="margin-top:56px">O que você vai receber no seu diagnóstico</h2>
+      <div class="grid">
+        <div class="card"><span class="num">1</span><h3>Grau de desequilíbrio</h3><p>Uma pontuação de 0 a 100 baseada nos seus 3 pilares — sono, alimentação e movimento — para você parar de adivinhar.</p></div>
+        <div class="card"><span class="num">2</span><h3>Impacto na sua vida</h3><p>Quanto isso já está custando — em energia, humor, autoestima e saúde — medido nas suas próprias respostas.</p></div>
+        <div class="card"><span class="num">3</span><h3>O sintoma-chave do seu caso</h3><p>Identificamos qual desequilíbrio (insulina, cortisol, estrogênio) está mais provavelmente travando o seu metabolismo.</p></div>
+        <div class="card"><span class="num">4</span><h3>Plano de ação recomendado</h3><p>Do guia "Emagrecer de Verdade" ao acompanhamento médico: o próximo passo certo para o seu momento — e nada mais que isso.</p></div>
+      </div>
     </div>
   </div>
 </div>
@@ -231,6 +228,7 @@ const TOTAL_STEPS = QUESTIONS.length + 1; // +1 = tela de contato final
 
 function startQuiz(){
   document.getElementById("quiz-zone").scrollIntoView({behavior:"smooth"});
+  document.getElementById("receber-bloco").style.display = "block";
   step = -1; answers = {};
   render();
 }
