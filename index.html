@@ -206,6 +206,7 @@ const WHATSAPP_URL = "https://wa.me/5567991792990?text=Ol%C3%A1!%20Fiz%20o%20dia
 const EBOOK_NAME   = "Emagrecer de Verdade";
 const EBOOK_URL    = "https://pay.kiwify.com.br/jaVdIvL"; // link de venda do ebook (Kiwify)
 const EBOOK_FALLBACK_URL = "https://wa.me/5567991792990?text=Ol%C3%A1!%20Quero%20comprar%20o%20ebook%20Emagrecer%20de%20Verdade";
+const GUIA_URL = "https://felipesanches7.github.io/downloads/guia-definitivo-suplementacao.pdf"; // guia gratuito (hook)
 const WEBHOOK_URL  = "https://maestro.adapta.one/webhooks/generic/8315447d4bf2f88f7a8b9774c4c2dc21f8a4f9cf10ef33903eef6f557400cdb4?secret=aa999a02c35e0bf70b7463aa43e8ad0b7328b118b65bf638d717739a4a3e4a21"; // grava o lead no CRM (Google Sheets)
 
 /* ================= PERGUNTAS — MÉTODO SPIN =================
@@ -309,7 +310,10 @@ function render(){
       <div class="q-title">Antes de começar, uma coisa importa</div>
       <p style="color:var(--muted);margin-bottom:14px">Preparamos este diagnóstico para entender o que você busca, o que já tentou e o momento que você está vivendo. São perguntas rápidas — e algumas delas vão tocar em pontos que você talvez evite pensar.</p>
       <p style="color:var(--ink);font-weight:600;margin-bottom:14px">Responda com calma e, principalmente, com sinceridade.</p>
-      <p style="color:var(--muted);margin-bottom:18px">Não existe resposta certa ou errada aqui. O que existe é o seu corpo tentando te dizer algo — e este é o momento de ouvir.</p>
+      <p style="color:var(--muted);margin-bottom:14px">Não existe resposta certa ou errada aqui. O que existe é o seu corpo tentando te dizer algo — e este é o momento de ouvir.</p>
+      <div style="background:var(--orange-soft);border:1px solid var(--orange-line);border-radius:12px;padding:14px 16px;margin-bottom:18px">
+        <p style="margin:0;font-size:.92rem;color:var(--ink)">🎁 <strong>Presente ao concluir:</strong> o <strong>Guia Definitivo de Suplementação</strong> — os 8 suplementos com ciência para mulheres 40+, gratuito.</p>
+      </div>
       <button class="btn wide" onclick="step=0;render()">COMEÇAR AGORA →</button>
     `;
     return;
@@ -329,8 +333,14 @@ function render(){
       `;
       return;
     }
+    const restam = QUESTIONS.length - step - 1;
+    const teaser = (step === 7) ? `
+      <div style="background:var(--orange-soft);border:2px dashed var(--orange);border-radius:12px;padding:12px 16px;margin-bottom:14px;text-align:center">
+        <p style="margin:0;font-size:.92rem;color:var(--ink)">🎁 Faltam <strong>${restam} perguntas</strong> para receber o seu diagnóstico <strong>+ o Guia Definitivo de Suplementação</strong> (gratuito)</p>
+      </div>` : "";
     box.innerHTML = `
       <div class="q-count">Pergunta ${step+1} de ${QUESTIONS.length} · ${q.phase}</div>
+      ${teaser}
       ${phaseIntro()?`<p style="color:var(--orange);font-weight:600;font-size:.95rem;margin-bottom:10px">${phaseIntro()}</p>`:""}
       <div class="q-title">${title}</div>
       ${q.hint?`<p class="small-note" style="margin:0 0 14px">${q.hint}</p>`:""}
@@ -524,6 +534,12 @@ function showResult(){
   if(window.fbq){ fbq('track','Lead',{content_name:'quiz_diagnostico',nivel:nivel}); }
 
   let ctaHtml = "";
+  const guiaHtml = `
+    <div class="cta-ebook" style="border-style:solid;border-color:var(--orange-line)">
+      <h3>🎁 Seu presente: Guia Definitivo de Suplementação</h3>
+      <p>Os 8 suplementos com ciência para mulheres 40+ — o que fazem, como tomar e os erros a evitar. Gratuito, para começar hoje.</p>
+      <a class="btn ghost" href="${GUIA_URL}" target="_blank" onclick="if(window.fbq)fbq('track','ViewContent',{content_name:'guia_suplementacao'});">BAIXAR O GUIA GRATUITO (PDF)</a>
+    </div>`;
   if(querConsulta){
     ctaHtml = `
       <div class="cta-consulta">
@@ -536,7 +552,8 @@ function showResult(){
         <h3>Quer começar hoje mesmo, antes da consulta?</h3>
         <p>Meu guia <strong>${EBOOK_NAME}</strong> acelera os seus primeiros resultados enquanto você aguarda o atendimento.</p>
         <a class="btn ghost" href="${ebookHref}" target="_blank" onclick="if(window.fbq)fbq('track','InitiateCheckout');">QUERO O GUIA COM DESCONTO DE DIAGNÓSTICO</a>
-      </div>`;
+      </div>
+      ${guiaHtml}`;
   } else if(querPlano){
     ctaHtml = `
       <div class="cta-ebook">
@@ -548,7 +565,8 @@ function showResult(){
         <h3>Ou comece agora pelo guia ${EBOOK_NAME}</h3>
         <p>O passo a passo para destravar o seu metabolismo por conta própria — sono, alimentação e movimento.</p>
         <a class="btn ghost" href="${ebookHref}" target="_blank" onclick="if(window.fbq)fbq('track','InitiateCheckout');">QUERO O GUIA</a>
-      </div>`;
+      </div>
+      ${guiaHtml}`;
   } else if(dorAlta){
     // Dor alta + investimento 0: não é FRIO. Nutre com a consulta em mente (MORNO).
     ctaHtml = `
@@ -561,7 +579,8 @@ function showResult(){
         <h3>Enquanto isso, o guia ${EBOOK_NAME} já te deixa à frente</h3>
         <p>O passo a passo para destravar o seu metabolismo por conta própria — sono, alimentação e movimento.</p>
         <a class="btn ghost" href="${ebookHref}" target="_blank" onclick="if(window.fbq)fbq('track','InitiateCheckout');">QUERO O GUIA</a>
-      </div>`;
+      </div>
+      ${guiaHtml}`;
   } else {
     ctaHtml = `
       <div class="cta-ebook">
@@ -569,6 +588,7 @@ function showResult(){
         <p>Como o seu momento é de começar com o pé direito, o caminho é informação de qualidade aplicada desde já. O guia reúne o passo a passo para destravar o seu metabolismo — sono, alimentação e movimento — sem dietas malucas.</p>
         <a class="btn" href="${ebookHref}" target="_blank" onclick="if(window.fbq)fbq('track','InitiateCheckout');">QUERO O GUIA ${EBOOK_NAME.toUpperCase()} →</a>
       </div>
+      ${guiaHtml}
       <div class="cta-ebook" style="border-style:solid;border-color:var(--orange-line)">
         <h3>Quando quiser ir além do guia</h3>
         <p>Uma avaliação médica individualizada acelera — e muito — o resultado. Estou à disposição quando você sentir que é a hora.</p>
