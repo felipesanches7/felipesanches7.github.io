@@ -91,6 +91,42 @@
   .cta-ebook h3{margin-bottom:8px}
   .cta-ebook p{color:var(--muted);font-size:.93rem;margin-bottom:16px}
 
+  .pillar-block{margin-top:26px}
+  .pillar-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+  .pillar-head .pname{font-weight:700;color:var(--ink);font-size:.98rem}
+  .pillar-head .pscore{font-weight:800;color:var(--orange);font-size:.95rem}
+  .pmeter{background:var(--orange-line);border-radius:99px;height:14px;overflow:hidden}
+  .pmeter .pfill{height:100%;width:0;border-radius:99px;transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+  .tip-card{border-radius:14px;padding:18px 20px;margin-top:14px;animation:tipIn .6s ease both}
+  .tip-card.sono{background:#eef2fb;border-left:5px solid #4a6fa5}
+  .tip-card.alimentacao{background:#eef7ee;border-left:5px solid #5a8f5a}
+  .tip-card.exercicio{background:#fdf3ea;border-left:5px solid #c2410c}
+  .tip-card h4{margin:0 0 6px;font-size:.95rem;color:var(--ink)}
+  .tip-card p{margin:0;font-size:.9rem;color:var(--ink);line-height:1.55}
+  .tip-card .tipnum{display:inline-flex;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.08);align-items:center;justify-content:center;font-weight:800;font-size:.85rem;margin-right:8px}
+  @keyframes tipIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .deep-note{font-size:.85rem;color:var(--muted);margin-top:10px}
+
+  /* PILARES (resultado aprofundado) */
+  .pilar-meter{margin:14px 0 18px}
+  .pilar-meter .pilar-head{display:flex;justify-content:space-between;font-size:.9rem;font-weight:600;color:var(--ink);margin-bottom:6px}
+  .pilar-meter .pilar-head .pilar-pct{color:var(--muted);font-weight:700}
+  .pilar-bar{background:var(--orange-line);border-radius:99px;height:18px;overflow:hidden}
+  .pilar-bar-fill{height:100%;width:0;border-radius:99px;transition:width 1.2s cubic-bezier(.22,.61,.36,1)}
+  .pilar-tag{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:99px;margin-left:8px;vertical-align:middle}
+  .pilar-tag.critico{background:#fde8e0;color:#a63d0f}
+  .pilar-tag.atencao{background:#fdf3e0;color:#b45309}
+  .pilar-tag.ok{background:#eef5ef;color:#4a7a52}
+  .dica-card{border-radius:14px;padding:18px 20px;margin-bottom:14px;display:flex;gap:14px;align-items:flex-start;opacity:0;transform:translateY(10px);transition:opacity .6s ease, transform .6s ease}
+  .dica-card.show{opacity:1;transform:none}
+  .dica-card .dica-ico{font-size:1.6rem;line-height:1.2}
+  .dica-card h4{font-size:.98rem;margin-bottom:4px}
+  .dica-card p{font-size:.92rem;color:var(--ink)}
+  .dica-card.sono{background:#eef2fb;border-left:5px solid #4a6fa5}
+  .dica-card.alimentacao{background:#f2f7ee;border-left:5px solid #6b8f71}
+  .dica-card.exercicio{background:#fdf1ec;border-left:5px solid #c2410c}
+  .dica-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--orange);color:#fff;font-weight:800;font-size:.85rem;margin-right:8px}
+
   .foot{background:var(--sand);border-top:3px solid var(--orange);color:var(--muted);font-size:.8rem;text-align:center;padding:26px 0}
   @media(max-width:600px){.quiz-box{padding:26px 18px}}
 </style>
@@ -355,13 +391,49 @@ function computeScores(){
   const visceral    = sum(["fotos","energia_amados","exames","humor"]);
   const urgencia    = sum(["inicio","representaria"]);
   const investimento = byKey.investimento || 0;
+  // scores por pilar (0-100) para o diagnóstico aprofundado
+  const sonoPct    = Math.round((byKey.sono||0)/2*100);
+  const alimPct    = Math.round((byKey.alimentacao||0)/2*100);
+  const exerPct    = Math.round((byKey.exercicio||0)/2*100);
   return {
     sintomasPct:   Math.round(sintomas/14*100),
     visceralPct:   Math.round(visceral/8*100),
     urgenciaPct:   Math.round(urgencia/5*100),
-    investimento
+    investimento,
+    pilares: { sono: sonoPct, alimentacao: alimPct, exercicio: exerPct }
   };
 }
+
+/* ================= DICAS ESPECÍFICAS POR PILAR ================= */
+const PILAR_TIPS = {
+  sono: {
+    nome: "Sono",
+    cor: "sono",
+    txt: (n) => `Seu sono é o pilar mais comprometido (${n}/100). É ele que regula o cortisol — e quando o cortisol desanda, a fome e o peso desandam juntos.`,
+    dicas: [
+      "Às 21h, desligue TODA luz forte e silencie o celular (modo avião). Luz e som à noite empurram o sono pra longe.",
+      "Deite às 22h em ponto. O objetivo: estar dormindo até as 23h. O corpo precisa dessa janela — não é hora de 'mais um episódio'."
+    ]
+  },
+  alimentacao: {
+    nome: "Alimentação",
+    cor: "alimentacao",
+    txt: (n) => `A alimentação é o seu pilar mais comprometido (${n}/100). Não é falta de força de vontade — é o padrão do dia puxando pro lado errado.`,
+    dicas: [
+      "Coma um prato com PROTEÍNA (ovo, frango, carne, iogurte) nos primeiros 30 minutos depois de acordar. Isso corta a fome da tarde pela metade.",
+      "Às 20h, a cozinha fecha. Chá, água e nada mais. As calorias da noite são as que mais viram estoque."
+    ]
+  },
+  exercicio: {
+    nome: "Movimento",
+    cor: "exercicio",
+    txt: (n) => `O movimento é o pilar mais comprometido (${n}/100). A boa notícia: é o que responde mais rápido quando você começa.`,
+    dicas: [
+      "Amanhã, caminhe 20 minutos logo após o almoço, sem celular. Só isso. Repita todos os dias — o hábito vem do horário fixo, não da motivação.",
+      "A cada hora sentado, levante e faça 10 agachamentos (pode ser segurando na cadeira). Em 1 semana, seu corpo já percebe a diferença."
+    ]
+  }
+};
 
 /* ================= LOADING ANIMADO ================= */
 const LOAD_PHRASES = [
@@ -397,7 +469,7 @@ function showLoading(){
 
 /* ================= RESULTADO ================= */
 function showResult(){
-  const { sintomasPct, visceralPct, urgenciaPct, investimento } = computeScores();
+  const { sintomasPct, visceralPct, urgenciaPct, investimento, pilares } = computeScores();
   const box = document.getElementById("quiz-content");
 
   const nome = lead.nome.split(" ")[0];
@@ -418,6 +490,30 @@ function showResult(){
     calores:"flutuações hormonais (calorões e alterações de humor)",
     varios:"desequilíbrio hormonal múltiplo (o mais comum com o passar da idade)"
   }[answers.desafio] || "desequilíbrio metabólico";
+
+  // ===== Diagnóstico aprofundado: pilar mais comprometido + 2 dicas específicas =====
+  const pil = pilares || {};
+  const entries = [["sono", pil.sono||0],["alimentacao", pil.alimentacao||0],["exercicio", pil.exercicio||0]];
+  entries.sort((a,b)=>b[1]-a[1]);
+  const pior = entries[0];
+  const cfg = PILAR_TIPS[pior[0]];
+  const deepHtml = `
+    <div class="pillar-block">
+      <div style="font-weight:700;color:var(--ink);margin-bottom:4px">Seus 3 pilares, medidos um a um:</div>
+      ${entries.map(([k,v])=>`
+        <div class="pillar-head"><span class="pname">${PILAR_TIPS[k].nome}</span><span class="pscore">${v}/100</span></div>
+        <div class="pmeter"><div class="pfill" data-w="${Math.max(v,6)}" style="background:${k==='sono'?'#4a6fa5':k==='alimentacao'?'#5a8f5a':'var(--orange)'}"></div></div>
+      `).join("")}
+      <p class="deep-note">${cfg.txt(pior[1])} Focar nele primeiro muda o jogo — os outros dois seguem quando ele se organiza.</p>
+      <div class="tip-card ${cfg.cor}" style="animation-delay:.3s">
+        <h4><span class="tipnum">1</span>Dica prática para ${cfg.nome.toLowerCase()}</h4>
+        <p>${cfg.dicas[0]}</p>
+      </div>
+      <div class="tip-card ${cfg.cor}" style="animation-delay:.8s">
+        <h4><span class="tipnum">2</span>E a segunda:</h4>
+        <p>${cfg.dicas[1]}</p>
+      </div>
+    </div>`;
 
   const querConsulta = investimento >= 2 && urgenciaPct >= 40;
   const querPlano    = investimento >= 2 && urgenciaPct <  40;
@@ -489,6 +585,7 @@ function showResult(){
     <div style="font-weight:700;color:var(--ink)">Impacto na sua vida: ${visceralPct}/100</div>
     <div class="meter"><div class="fill" style="width:${Math.max(visceralPct,8)}%;background:${corFill}"></div></div>
     <div class="meter-label"><span>Leve</span><span>Moderado</span><span>Alto</span></div>
+    ${deepHtml}
     <div class="result-card ${cor}">
       <h3>O que isso significa</h3>
       <p>Seu padrão de respostas aponta <strong>${nivelTxt}</strong>. E, pelo que você respondeu, ${impactoTxt}</p>
@@ -502,6 +599,10 @@ function showResult(){
     <p class="small-note center" style="margin-top:18px">Dr. Felipe Sanches Carneiro · CRM-MS 12334 · Campo Grande-MS e online</p>
   `;
   document.getElementById("quiz-zone").scrollIntoView({behavior:"smooth"});
+  // animar medidores dos pilares (igual ao score geral)
+  setTimeout(()=>{
+    document.querySelectorAll('.pmeter .pfill').forEach(el=>{ el.style.width = el.dataset.w + '%'; });
+  }, 150);
 }
 </script>
 </body>
