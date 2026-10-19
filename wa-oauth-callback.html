@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WhatsApp — Autorização concluída</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#faf9f7;color:#1c1c1c;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+  .card{background:#fff;border:1px solid #eee2d9;border-radius:16px;padding:40px 28px;max-width:520px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.06)}
+  h1{font-size:1.3rem;margin-bottom:12px}
+  p{color:#5c5c5c;font-size:.95rem;line-height:1.5;margin-bottom:10px}
+  code{background:#f0ede8;padding:8px 12px;border-radius:8px;display:block;margin:14px 0;word-break:break-all;font-size:.8rem;text-align:left;color:#333}
+  .btn{background:#E8590C;color:#fff;border:none;border-radius:10px;padding:12px 24px;font-size:.9rem;font-weight:700;cursor:pointer;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>✅ Autorização recebida</h1>
+  <p>Se o código abaixo apareceu, a autorização funcionou.</p>
+  <p><strong>Copie o código</strong> (tudo depois de <code>code=</code>) e cole no chat para o Jarvis concluir a ativação:</p>
+  <code id="code">carregando...</code>
+  <button class="btn" onclick="copiar()">Copiar código</button>
+  <p id="erro" style="color:#c0392b;display:none"></p>
+</div>
+<script>
+const p = new URLSearchParams(location.search);
+const code = p.get("code");
+const err = p.get("error_description");
+if (code) {
+  document.getElementById("code").textContent = code;
+} else if (err) {
+  document.getElementById("erro").style.display = "block";
+  document.getElementById("erro").textContent = "Erro do Facebook: " + err;
+  document.getElementById("code").textContent = "(sem código)";
+} else {
+  document.getElementById("code").textContent = "(nenhum código recebido — volte e autorize novamente)";
+}
+function copiar(){
+  navigator.clipboard.writeText(document.getElementById("code").textContent).then(()=>{
+    document.querySelector(".btn").textContent = "Copiado ✓";
+  });
+}
+</script>
+</body>
+</html>
