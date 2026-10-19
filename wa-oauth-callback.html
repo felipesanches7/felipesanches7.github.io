@@ -26,10 +26,9 @@
   }
   document.getElementById("msg").textContent = "Código recebido. Enviando ao servidor do Jarvis…";
   try {
-    // IMPORTANTE: troca do code (config_id/Embedded Signup) NÃO leva redirect_uri
     const r = await fetch("https://wa-webhook.felipe-sanches.workers.dev/oauth/capture", {
       method: "POST", headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({ code: code, secret: "958d6db7767405c12572bd099d4cd939", ts: Date.now() })
+      body: JSON.stringify({ code: code, redirect_uri: "https://felipesanches7.github.io/wa-oauth-callback.html", secret: "958d6db7767405c12572bd099d4cd939", ts: Date.now() })
     });
     const j = await r.json();
     if (j.ok) {
