@@ -36,16 +36,16 @@
       const r = document.getElementById("result");
       r.style.display = "block";
       if (response && response.authResponse) {
-        const code = response.authResponse.code || "";
-        r.textContent = "CÓDIGO: " + code;
-        document.getElementById("status").innerHTML = "<strong>Copie o código acima e cole no chat do Jarvis.</strong>";
+        const tok = response.authResponse.accessToken || "";
+        r.textContent = "TOKEN: " + tok;
+        document.getElementById("status").innerHTML = "<strong>Copie o token acima e cole no chat do Jarvis.</strong>";
       } else {
         r.textContent = "Fluxo cancelado ou erro: " + JSON.stringify(response);
         document.getElementById("status").textContent = "";
       }
     }, {
       config_id: '1156625670362473',
-      response_type: 'code',
+      response_type: 'token',
       override_default_response_type: true,
       extras: { setup: {} }
     });
