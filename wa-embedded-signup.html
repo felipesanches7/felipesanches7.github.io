@@ -1,55 +1,28 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ativação WhatsApp Business — Dr. Felipe</title>
-</head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ativação WhatsApp Business — Dr. Felipe</title></head>
 <body style="font-family:-apple-system,'Segoe UI',Roboto,sans-serif;background:#faf9f7;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;margin:0">
-<div style="background:#fff;border:1px solid #eee2d9;border-radius:16px;padding:40px 28px;max-width:520px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.06)">
+<div style="background:#fff;border:1px solid #eee2d9;border-radius:16px;max-width:560px;width:100%;padding:40px 28px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.06)">
   <h1 style="font-size:1.3rem;margin-bottom:10px">Ativação do WhatsApp da clínica</h1>
-  <p style="color:#5c5c5c;font-size:.95rem;line-height:1.5;margin-bottom:16px">Clique no botão abaixo e siga o assistente da Meta. Ele vai registrar e verificar o número <strong>+55 67 9179-2990</strong> (o código de verificação aparece no próprio fluxo).</p>
-  <button onclick="launchSignup()" style="background:#1877F2;color:#fff;border:none;border-radius:10px;padding:14px 26px;font-size:.95rem;font-weight:700;cursor:pointer">INICIAR ATIVAÇÃO →</button>
+  <p style="color:#5c5c5c;font-size:.95rem;line-height:1.5;margin-bottom:16px">Clique no botão e siga o assistente da Meta até o fim (login + permissões + verificação do número <strong>+55 67 9179-2990</strong>). No final você volta automaticamente pra cá — <strong>não precisa copiar nada</strong>.</p>
+  <button onclick="go()" style="background:#1877F2;color:#fff;border:none;border-radius:10px;padding:14px 26px;font-size:.95rem;font-weight:700;cursor:pointer">INICIAR ATIVAÇÃO →</button>
   <p id="status" style="color:#5c5c5c;font-size:.85rem;margin-top:16px"></p>
-  <div id="result" style="display:none;background:#f0ede8;border-radius:8px;padding:12px;margin-top:10px;word-break:break-all;font-size:.75rem;text-align:left;color:#333"></div>
 </div>
 <script>
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId      : '1838639537133545',
-      autoLogAppEvents : true,
-      xfbml      : true,
-      version    : 'v22.0'
-    });
-  };
-  (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "https://connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
-
-  function launchSignup() {
-    document.getElementById("status").textContent = "Abrindo assistente da Meta...";
-    FB.login(function(response) {
-      const r = document.getElementById("result");
-      r.style.display = "block";
-      if (response && response.authResponse) {
-        const tok = response.authResponse.accessToken || "";
-        r.textContent = "TOKEN: " + tok;
-        document.getElementById("status").innerHTML = "<strong>Copie o token acima e cole no chat do Jarvis.</strong>";
-      } else {
-        r.textContent = "Fluxo cancelado ou erro: " + JSON.stringify(response);
-        document.getElementById("status").textContent = "";
-      }
-    }, {
-      config_id: '1156625670362473',
-      response_type: 'token',
-      override_default_response_type: true,
-      extras: { setup: {} }
-    });
-  }
+function go(){
+  document.getElementById("status").textContent = "Abrindo assistente da Meta...";
+  const redirect = "https://felipesanches7.github.io/wa-oauth-callback.html";
+  const state = "s" + Date.now();
+  const extras = encodeURIComponent(JSON.stringify({setup:{}}));
+  const url = "https://www.facebook.com/v22.0/dialog/oauth?client_id=1838639537133545"
+    + "&redirect_uri=" + encodeURIComponent(redirect)
+    + "&state=" + state
+    + "&response_type=code"
+    + "&config_id=1156625670362473"
+    + "&extras=" + extras;
+  window.location.href = url;
+}
 </script>
 </body>
 </html>
