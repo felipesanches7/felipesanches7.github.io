@@ -215,8 +215,12 @@ const WEBHOOK_URL  = "https://wa-webhook.felipe-sanches.workers.dev/lead"; // fi
    Formato da opção: [valor, rótulo, pontos]
 ============================================================= */
 const QUESTIONS = [
-  /* ---- S: SITUAÇÃO ---- */
+  /* ---- 1. IDENTIFICAÇÃO (nome + telefone de cara) ---- */
   { key:"nome_lead", phase:"Pra começar", title:"Como podemos te chamar?", type:"text", placeholder:"Seu primeiro nome" },
+  { key:"whatsapp", phase:"Pra começar", title:"Qual o seu WhatsApp?", type:"tel", placeholder:"(67) 9 9999-9999",
+    hint:"É por ele que você recebe o seu diagnóstico. Fica entre nós." },
+
+  /* ---- S: SITUAÇÃO ---- */
   { key:"idade", phase:"Sua situação hoje", title:"Qual é a sua faixa de idade?",
     opts:[["30-40","Entre 30 e 40 anos",0],["41-50","Entre 41 e 50 anos",0],["51-60","Entre 51 e 60 anos",0],["60+","Mais de 60 anos",0]] },
   { key:"sono", phase:"Sua situação hoje", title:"Como está o seu sono hoje?",
@@ -229,20 +233,12 @@ const QUESTIONS = [
   /* ---- P: PROBLEMA ---- */
   { key:"desafio", phase:"O que está travando", title:"Qual é o seu maior desafio hoje?",
     opts:[["peso","O peso travou e não sai de jeito nenhum",2],["sono","O sono ruim",1],["energia","A falta de energia e disposição",1],["calores","Os calorões e as alterações de humor",1],["varios","Um pouco de tudo isso",2]] },
-  { key:"tentou", phase:"O que está travando", title:"Você já tentou dietas e/ou exercícios sem resultado duradouro?",
-    opts:[["sim","Sim, várias vezes",2],["algumas","Uma ou outra vez",1],["nao","Ainda não tentei",0]] },
   { key:"antojos", phase:"O que está travando", title:"Nos últimos 30 dias, a vontade de comer fora de hora:",
     opts:[["raro","Quase não apareceram",0],["semanal","Apareceram várias vezes por semana",1],["diario","Aparecem praticamente todos os dias",2]] },
-  { key:"balanca", phase:"O que está travando", title:"O que a balança e a roupa dizem?",
-    opts:[["estavel","Peso estável na faixa que considero saudável",0],["subiu","Subiu nos últimos anos — e a roupa está apertando",1],["muito","Subiu muito e nada do que eu faço resolve",2]] },
 
   /* ---- I: IMPLICAÇÃO (viscerais) ---- */
-  { key:"fotos", phase:"O impacto na sua vida", title:"{nome}, quando você vê fotos suas, o que sente?",
-    opts:[["normal","Normal — não me afeta",0],["evito","Evito aparecer em fotos",1],["sempre","Evito fotos e espelho há tempos — e isso dói",2]] },
   { key:"energia_amados", phase:"O impacto na sua vida", title:"{nome}, pense na energia para o que realmente importa: você tem dado conta das pessoas que ama — filhos, netos, quem depende de você?",
     opts:[["conta","Sim, dou conta",0],["exausta","Acabo o dia sem energia para elas",1],["deixei","Já deixei de fazer coisas por estar exausta",2]] },
-  { key:"exames", phase:"O impacto na sua vida", title:"E os exames — pressão, glicose, colesterol?",
-    opts:[["normais","Estão todos normais",0],["alterando","Começaram a alterar",1],["diagnostico","Já tenho diagnóstico (pressão alta, pré-diabetes…)",2]] },
   { key:"humor", phase:"O impacto na sua vida", title:"{nome}, na sinceridade: como o seu peso afeta o seu humor e as suas relações?",
     opts:[["nao_afeta","Não afeta",0],["desanima","Me desanima às vezes",1],["tudo","Afeta tudo — humor, autoestima, intimidade",2]] },
 
@@ -250,8 +246,6 @@ const QUESTIONS = [
   { key:"inicio", phase:"O próximo passo", title:"{nome}, se existisse um plano claro para resolver isso, quando você gostaria de começar?",
     hint:"Isso nos ajuda a priorizar o conteúdo que enviamos para você.",
     opts:[["agora","O quanto antes — isso já me atrapalha há tempo demais",3],["semanas","Nas próximas semanas",2],["meses","Nos próximos meses",1],["entender","Por enquanto só quero entender meu corpo",0]] },
-  { key:"representaria", phase:"O próximo passo", title:"{nome}, resolver isso, na prática, representaria o quê para você?",
-    opts:[["energia","Recuperar energia, sono e disposição para viver de verdade",2],["espelho","Voltar a me reconhecer no espelho",1],["saude","Prevenir os riscos que já vejo chegando",2],["incerta","Ainda não sei dizer",0]] },
   { key:"investimento", phase:"O próximo passo", title:"{nome}, quando você pensa em cuidar disso de verdade, o que combina mais com o seu momento?",
     hint:"Resposta usada apenas para recomendar o caminho certo — nada é cobrado aqui.",
     opts:[["consulta","Acompanhamento médico individualizado",3],["programa","Um programa estruturado com orientação",2],["ebook","Quero começar devagar, com um guia pra me organizar",1],["gratuito","Por enquanto, prefiro conteúdo gratuito",0]] },
@@ -277,9 +271,16 @@ function pick(qi, val){
   setTimeout(()=>{ step++; render(); }, 220);
 }
 function saveText(qi){
-  const val = document.getElementById("f-nome-lead").value.trim();
-  if(!val){ alert("Me diz como te chamo para continuar 😊"); return; }
-  answers[QUESTIONS[qi].key] = val;
+  const q = QUESTIONS[qi];
+  const el = document.getElementById(q.type==="tel" ? "f-wa-lead" : "f-nome-lead");
+  const val = el.value.trim();
+  if(!val){ alert(q.type==="tel" ? "Precisamos do seu WhatsApp para enviar o diagnóstico 😊" : "Me diz como te chamo para continuar 😊"); return; }
+  if(q.type==="tel"){
+    const dig = val.replace(/\D/g,"");
+    if(dig.length < 10){ alert("Confira o número — parece incompleto."); return; }
+    lead.whatsapp = dig.length <= 11 ? "55"+dig : dig;
+  }
+  answers[q.key] = val;
   step++; render();
 }
 function goBack(){ if(step>0){ step--; render(); } }
@@ -323,11 +324,13 @@ function render(){
     const firstName = (answers.nome_lead || "").trim().split(/\s+/)[0] || "";
     const personalize = (t) => firstName ? t.replace(/^([A-ZÀ-Ú][a-zà-ú]+)/, firstName + ", $1").replace("{nome}", firstName) : t.replace("{nome}, ", "");
     const title = personalize(q.title);
-    if(q.type === "text"){
+    if(q.type === "text" || q.type === "tel"){
+      const fid = q.type==="tel" ? "f-wa-lead" : "f-nome-lead";
       box.innerHTML = `
         <div class="q-count">Pergunta ${step+1} de ${QUESTIONS.length} · ${q.phase}</div>
         <div class="q-title">${title}</div>
-        <input class="q-input" id="f-nome-lead" placeholder="${q.placeholder||""}" value="${answers[q.key]||""}">
+        ${q.hint?`<p class="small-note" style="margin:0 0 14px">${q.hint}</p>`:""}
+        <input class="q-input" id="${fid}" type="${q.type==="tel"?"tel":"text"}" placeholder="${q.placeholder||""}" value="${q.type==="tel"?(lead.whatsapp||""):(answers[q.key]||"")}">
         <div style="margin-top:10px"><button class="btn wide" onclick="saveText(${step})">CONTINUAR →</button></div>
         ${step>0?`<div class="q-nav"><button class="back" onclick="goBack()">← Voltar</button><span></span></div>`:""}
       `;
@@ -352,12 +355,13 @@ function render(){
     const nomeF = (answers.nome_lead || "").trim().split(/\s+/)[0] || "";
     box.innerHTML = `
       <div class="q-count">Último passo</div>
-      <div class="q-title">${nomeF}, seu diagnóstico está pronto. Para onde enviamos?</div>
-      <p style="color:var(--muted);margin-bottom:16px">Seu resultado é único e pessoal — por isso ele vai direto para o seu WhatsApp, com a análise do Dr. Felipe sobre o seu caso.</p>
-      <label class="field-label" for="f-wa">Qual o melhor número para falar com você?</label>
-      <input class="q-input" id="f-wa" type="tel" placeholder="(67) 9 9999-9999" value="${lead.whatsapp}">
+      <div class="q-title">${nomeF}, seu diagnóstico está pronto.</div>
+      <p style="color:var(--muted);margin-bottom:16px">Vou gerar a sua análise agora e ela já está reservada para o seu WhatsApp.</p>
+      <div style="background:var(--orange-soft);border:1px solid var(--orange-line);border-radius:12px;padding:14px 16px;margin-bottom:16px">
+        <p style="margin:0;font-size:.92rem;color:var(--ink)">📲 Vai para: <strong>${lead.whatsapp||""}</strong></p>
+      </div>
       <p class="small-note">🔒 Confidencial. Usado apenas para o seu diagnóstico e, se você quiser, o próximo passo com o Dr. Felipe.</p>
-      <div style="margin-top:16px"><button class="btn wide" onclick="finish()">RECEBER MEU DIAGNÓSTICO →</button></div>
+      <div style="margin-top:16px"><button class="btn wide" onclick="finish()">VER MEU DIAGNÓSTICO AGORA →</button></div>
       <div class="q-nav"><button class="back" onclick="goBack()">← Voltar</button><span></span></div>
     `;
   }
@@ -365,9 +369,9 @@ function render(){
 
 function finish(){
   const nome = (answers.nome_lead || "").trim();
-  const wa   = document.getElementById("f-wa").value.trim();
+  const wa   = lead.whatsapp || "";
   if(!nome || wa.replace(/\D/g,"").length < 10){
-    alert("Preencha um WhatsApp válido para receber o seu diagnóstico.");
+    alert("Precisamos do seu WhatsApp para enviar o diagnóstico. Volte uma etapa e confira o número.");
     return;
   }
   lead = { nome, whatsapp: wa };
@@ -384,9 +388,9 @@ function sendLead(){
 }
 
 /* ================= PONTUAÇÃO =================
-   sintomas: sono, exercicio, alimentacao, desafio, tentou, antojos, balanca → máx 14
-   visceral: fotos, energia_amados, exames, humor                → máx 8
-   urgencia: inicio (0-3) + representaria (0-2)                  → máx 5
+   sintomas: sono, exercicio, alimentacao, desafio, antojos  → máx 10
+   visceral: energia_amados, humor                          → máx 4
+   urgencia: inicio (0-3)                                   → máx 3
    investimento: 0-3
 ================================================= */
 function computeScores(){
@@ -397,18 +401,18 @@ function computeScores(){
     if(sel) byKey[q.key] = sel[2];
   });
   const sum = keys => keys.reduce((a,k)=>a+(byKey[k]||0),0);
-  const sintomas    = sum(["sono","exercicio","alimentacao","desafio","tentou","antojos","balanca"]);
-  const visceral    = sum(["fotos","energia_amados","exames","humor"]);
-  const urgencia    = sum(["inicio","representaria"]);
+  const sintomas    = sum(["sono","exercicio","alimentacao","desafio","antojos"]);
+  const visceral    = sum(["energia_amados","humor"]);
+  const urgencia    = sum(["inicio"]);
   const investimento = byKey.investimento || 0;
   // scores por pilar (0-100) para o diagnóstico aprofundado
   const sonoPct    = Math.round((byKey.sono||0)/2*100);
   const alimPct    = Math.round((byKey.alimentacao||0)/2*100);
   const exerPct    = Math.round((byKey.exercicio||0)/2*100);
   return {
-    sintomasPct:   Math.round(sintomas/14*100),
-    visceralPct:   Math.round(visceral/8*100),
-    urgenciaPct:   Math.round(urgencia/5*100),
+    sintomasPct:   Math.round(sintomas/10*100),
+    visceralPct:   Math.round(visceral/4*100),
+    urgenciaPct:   Math.round(urgencia/3*100),
     investimento,
     pilares: { sono: sonoPct, alimentacao: alimPct, exercicio: exerPct }
   };
