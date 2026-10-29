@@ -188,7 +188,7 @@ fbq('track','PageView');
         <div class="card"><span class="num">1</span><h3>Grau de desequilíbrio</h3><p>Uma pontuação de 0 a 100 baseada nos seus 3 pilares — sono, alimentação e movimento — para você parar de adivinhar.</p></div>
         <div class="card"><span class="num">2</span><h3>Impacto na sua vida</h3><p>Quanto isso já está custando — em energia, humor, autoestima e saúde — medido nas suas próprias respostas.</p></div>
         <div class="card"><span class="num">3</span><h3>O sintoma-chave do seu caso</h3><p>Identificamos qual desequilíbrio (insulina, cortisol, estrogênio) está mais provavelmente travando o seu metabolismo.</p></div>
-        <div class="card"><span class="num">4</span><h3>Plano de ação recomendado</h3><p>Do guia "Emagrecer de Verdade" ao acompanhamento médico: o próximo passo certo para o seu momento — e nada mais que isso.</p></div>
+        <div class="card"><span class="num">4</span><h3>Plano de ação recomendado</h3><p>Do livro completo "Emagrecer de Verdade" ao acompanhamento médico: o próximo passo certo para o seu momento — e nada mais que isso.</p></div>
       </div>
     </div>
   </div>
@@ -203,7 +203,7 @@ fbq('track','PageView');
 <script>
 /* ================= CONFIG ================= */
 const WHATSAPP_URL = "https://wa.me/5567991792990?text=Ol%C3%A1!%20Fiz%20o%20diagn%C3%B3stico%20e%20quero%20agendar%20minha%20avalia%C3%A7%C3%A3o";
-const EBOOK_NAME   = "Emagrecer de Verdade";
+const EBOOK_NAME   = "Livro Completo Emagrecer de Verdade";
 const EBOOK_URL    = "https://pay.kiwify.com.br/jaVdIvL"; // link de venda do ebook (Kiwify)
 const EBOOK_FALLBACK_URL = "https://wa.me/5567991792990?text=Ol%C3%A1!%20Quero%20comprar%20o%20ebook%20Emagrecer%20de%20Verdade";
 const GUIA_URL = "https://felipesanches7.github.io/downloads/guia-definitivo-suplementacao.html"; // página de download do guia (PDF embutido)
@@ -248,7 +248,7 @@ const QUESTIONS = [
     opts:[["agora","O quanto antes — isso já me atrapalha há tempo demais",3],["semanas","Nas próximas semanas",2],["meses","Nos próximos meses",1],["entender","Por enquanto só quero entender meu corpo",0]] },
   { key:"investimento", phase:"O próximo passo", title:"{nome}, quando você pensa em cuidar disso de verdade, o que combina mais com o seu momento?",
     hint:"Resposta usada apenas para recomendar o caminho certo — nada é cobrado aqui.",
-    opts:[["consulta","Acompanhamento médico individualizado",3],["programa","Um programa estruturado com orientação",2],["ebook","Quero começar devagar, com um guia pra me organizar",1],["gratuito","Por enquanto, prefiro conteúdo gratuito",0]] },
+    opts:[["consulta","Acompanhamento médico individualizado",3],["programa","Um programa estruturado com orientação",2],["ebook","Quero começar devagar, com um livro pra me organizar",1],["gratuito","Por enquanto, prefiro conteúdo gratuito",0]] },
 ];
 
 /* ================= ESTADO ================= */
@@ -554,8 +554,8 @@ function showResult(){
       </div>
       <div class="cta-ebook">
         <h3>Quer começar hoje mesmo, antes da consulta?</h3>
-        <p>Meu guia <strong>${EBOOK_NAME}</strong> acelera os seus primeiros resultados enquanto você aguarda o atendimento.</p>
-        <a class="btn ghost" href="${ebookHref}" target="_blank" onclick="if(window.fbq)fbq('track','InitiateCheckout');">QUERO O GUIA COM DESCONTO DE DIAGNÓSTICO</a>
+        <p>Meu livro completo <strong>${EBOOK_NAME}</strong> acelera os seus primeiros resultados enquanto você aguarda o atendimento.</p>
+        <a class="btn ghost" href="${ebookHref}" target="_blank" onclick="if(window.fbq)fbq('track','InitiateCheckout');">QUERO O LIVRO COM DESCONTO DE DIAGNÓSTICO</a>
       </div>
       ${guiaHtml}`;
   } else if(querPlano){
@@ -566,9 +566,9 @@ function showResult(){
         <a class="btn" href="${WHATSAPP_URL}" target="_blank" onclick="if(window.fbq)fbq('track','Contact');">QUERO CONHECER O PROGRAMA →</a>
       </div>
       <div class="cta-ebook">
-        <h3>Ou comece agora pelo guia ${EBOOK_NAME}</h3>
+        <h3>Ou comece agora pelo livro completo ${EBOOK_NAME}</h3>
         <p>O passo a passo para destravar o seu metabolismo por conta própria — sono, alimentação e movimento.</p>
-        <a class="btn ghost" href="${ebookHref}" target="_blank" onclick="if(window.fbq)fbq('track','InitiateCheckout');">QUERO O GUIA</a>
+        <a class="btn ghost" href="${ebookHref}" target="_blank" onclick="if(window.fbq)fbq('track','InitiateCheckout');">QUERO O LIVRO</a>
       </div>
       ${guiaHtml}`;
   } else if(dorAlta){
@@ -580,21 +580,21 @@ function showResult(){
         <a class="btn" href="${WHATSAPP_URL}" target="_blank" onclick="if(window.fbq)fbq('track','Contact');">QUERO CONHECER O PROGRAMA →</a>
       </div>
       <div class="cta-ebook">
-        <h3>Enquanto isso, o guia ${EBOOK_NAME} já te deixa à frente</h3>
+        <h3>Enquanto isso, o livro completo ${EBOOK_NAME} já te deixa à frente</h3>
         <p>O passo a passo para destravar o seu metabolismo por conta própria — sono, alimentação e movimento.</p>
-        <a class="btn ghost" href="${ebookHref}" target="_blank" onclick="if(window.fbq)fbq('track','InitiateCheckout');">QUERO O GUIA</a>
+        <a class="btn ghost" href="${ebookHref}" target="_blank" onclick="if(window.fbq)fbq('track','InitiateCheckout');">QUERO O LIVRO</a>
       </div>
       ${guiaHtml}`;
   } else {
     ctaHtml = `
       <div class="cta-ebook">
-        <h3>Seu próximo passo: o guia ${EBOOK_NAME}</h3>
-        <p>Como o seu momento é de começar com o pé direito, o caminho é informação de qualidade aplicada desde já. O guia reúne o passo a passo para destravar o seu metabolismo — sono, alimentação e movimento — sem dietas malucas.</p>
-        <a class="btn" href="${ebookHref}" target="_blank" onclick="if(window.fbq)fbq('track','InitiateCheckout');">QUERO O GUIA ${EBOOK_NAME.toUpperCase()} →</a>
+        <h3>Seu próximo passo: o livro completo ${EBOOK_NAME}</h3>
+        <p>Como o seu momento é de começar com o pé direito, o caminho é informação de qualidade aplicada desde já. O livro completo reúne o passo a passo para destravar o seu metabolismo — sono, alimentação e movimento — sem dietas malucas.</p>
+        <a class="btn" href="${ebookHref}" target="_blank" onclick="if(window.fbq)fbq('track','InitiateCheckout');">QUERO O LIVRO ${EBOOK_NAME.toUpperCase()} →</a>
       </div>
       ${guiaHtml}
       <div class="cta-ebook" style="border-style:solid;border-color:var(--orange-line)">
-        <h3>Quando quiser ir além do guia</h3>
+        <h3>Quando quiser ir além do livro completo</h3>
         <p>Uma avaliação médica individualizada acelera — e muito — o resultado. Estou à disposição quando você sentir que é a hora.</p>
         <a class="btn ghost" href="${WHATSAPP_URL}" target="_blank" onclick="if(window.fbq)fbq('track','Contact');">FALAR COM O DR. FELIPE</a>
       </div>`;
