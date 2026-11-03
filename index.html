@@ -367,7 +367,9 @@ function render(){
   }
 }
 
+let enviando = false, ultimoEnvio = {sig:"", ts:0};
 function finish(){
+  if(enviando) return;
   const nome = (answers.nome_lead || "").trim();
   const wa   = lead.whatsapp || "";
   if(!nome || wa.replace(/\D/g,"").length < 10){
@@ -375,6 +377,11 @@ function finish(){
     return;
   }
   lead = { nome, whatsapp: wa };
+  // trava: mesmo lead + mesmas respostas dentro de 2 min nao envia de novo (clique repetido)
+  const sig = wa.replace(/\D/g,"") + "|" + JSON.stringify(answers);
+  if(sig === ultimoEnvio.sig && (Date.now() - ultimoEnvio.ts) < 120000) return;
+  ultimoEnvio = { sig, ts: Date.now() };
+  enviando = true;
   sendLead();
   showLoading();
 }
